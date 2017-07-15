@@ -4,37 +4,14 @@ import KaisaBid.chain.*;
 import Util.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mealallowance.chain.NameFilter;
-import mealallowance.chain.OvertimeFilter;
-import mealallowance.chain.WorkExceptionFilter;
-import mealallowance.model.MealAllowance;
-import mealallowance.model.WorkException;
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.ParseException;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.DateUtils;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import org.apache.poi.util.ArrayUtil;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileSystemView;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -107,7 +84,7 @@ public class KaisaBidController extends Thread {
         map.put("pageSize",kaisaBid.getPageSize()+"");
         String body = null;
         try {
-            body = HttpClientUtil.send(kaisaBid.getScanUrl(), map,"utf-8");
+            body = HttpClientUtil.send(kaisaBid.getHost()+kaisaBid.getScanUrl(), map,"utf-8");
         } catch (IOException e) {
             return false;
         }
@@ -221,22 +198,36 @@ public class KaisaBidController extends Thread {
     }*/
 
     public  void openBrower(String id){
+        PropertiesUtil.setValue("loanId",id);
         if (java.awt.Desktop.isDesktopSupported()) {
             try {
                 // 创建一个URI实例
                 java.net.URI uri =null;
-                if(this.kaisaBid.getAutoJumpPage().equals("loanDetail")){
-                    uri = java.net.URI.create(this.kaisaBid.getLoanDetail()+id);
-                }else{
-                    uri = java.net.URI.create(this.kaisaBid.getLoanList());
-                }
-                // 获取当前系统桌面扩展
                 java.awt.Desktop dp = java.awt.Desktop.getDesktop() ;
-                // 判断系统桌面是否支持要执行的功能
-                if (dp.isSupported(java.awt.Desktop.Action.BROWSE)) {
-                    // 获取系统默认浏览器打开链接
+                if(this.kaisaBid.getAutoJumpPage().equals("loanDetail")){
+                    uri = java.net.URI.create(kaisaBid.getHost()+this.kaisaBid.getLoanDetail()+id);
+                    dp.open(new File("C:\\Users\\zhouchuang\\Desktop\\金服投标助手\\ChromeTool.exe"));
+                }else{
+                    uri = java.net.URI.create(kaisaBid.getHost()+this.kaisaBid.getLoanList());
                     dp.browse( uri ) ;
                 }
+                // 获取当前系统桌面扩展
+
+//                // 判断系统桌面是否支持要执行的功能
+//                if (dp.isSupported(java.awt.Desktop.Action.BROWSE)) {
+//                    // 获取系统默认浏览器打开链接
+//                    //dp.browse( uri ) ;
+//
+////                    Runtime run = Runtime.getRuntime();
+////                    Process process = run.exec("cmd.exe /k start " + "python C:\\Users\\zhouchuang\\Desktop\\金服投标助手\\ChromeTool.py");
+//
+//                    //dp.mail(new URI("mailto:zhouchuang@kaisagroup.com"));
+////                    System.setProperty("webdriver.chrome.driver","C:\\Program Files (x86)\\chromedriver_win32\\chromedriver_x64.exe");
+////                    WebDriver driver = new ChromeDriver();//打开浏览器webdriver.ChromeOptions()
+////                    WebDriver.Navigation navigation = driver.navigate();//获取浏览器的对象
+////                    navigation.to(this.kaisaBid.getLoanDetail()+id);//控制浏览器跳转到http://www.baidu.com
+//
+//                }
             } catch (Exception e) {
                 e.printStackTrace() ;
             }

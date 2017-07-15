@@ -107,9 +107,22 @@
             <version>1.0.19</version>
         </dependency>
 
+        <!--&lt;!&ndash; https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java &ndash;&gt;-->
+       <!--<dependency>-->
+            <!--<groupId>org.seleniumhq.selenium</groupId>-->
+            <!--<artifactId>selenium-java</artifactId>-->
+            <!--<version>3.4.0</version>-->
+        <!--</dependency>-->
+
+        <!--&lt;!&ndash; https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-server &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>org.seleniumhq.selenium</groupId>-->
+            <!--<artifactId>selenium-server</artifactId>-->
+            <!--<version>3.4.0</version>-->
+        <!--</dependency>-->
+
 
     </dependencies>
-
 
     <build>
         <plugins>

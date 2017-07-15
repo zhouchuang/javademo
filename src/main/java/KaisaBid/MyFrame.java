@@ -42,6 +42,7 @@ public class MyFrame implements ActionListener {
     JMenu config=new JMenu("配置") ;     //创建JMenu菜单对象
     JMenuItem scanconfig=new JMenuItem("扫描配置") ;  //菜单项
     JMenuItem urlconfig=new JMenuItem("网络配置") ;//菜单项
+    JMenuItem investfig=new JMenuItem("投资配置") ;//菜单项
     JMenu help=new JMenu("帮助") ;     //创建JMenu菜单对象
     JMenuItem about=new JMenuItem("关于") ;  //菜单项
     JMenuItem sop=new JMenuItem("使用说明") ;  //菜单项
@@ -76,16 +77,33 @@ public class MyFrame implements ActionListener {
     JTextField pageSizeText = new JTextField();
 
     JFrame framesuburl = null;
+    JLabel host = new JLabel("  主机地址");
     JLabel scanurl = new JLabel("  扫描地址");
     JLabel loanList = new JLabel("  我要投资");
     JLabel loanDetail = new JLabel("  项目详情");
+    JLabel loginUrl = new JLabel("  登陆页面");
     JLabel autoJump = new JLabel("  自动跳转");
     JRadioButton jumpLoanDetail = new JRadioButton("项目详情");
     JRadioButton jumpLoanList = new JRadioButton("我要投资");
     ButtonGroup buttonGroup = new ButtonGroup();
     JTextField scanurlText = new JTextField();
+    JTextField loginUrlText = new JTextField();
+    JTextField hostText = new JTextField();
     JTextField loanListText = new JTextField();
     JTextField loanDetailText = new JTextField();
+
+
+    JFrame frameinvest  =null;
+    JLabel loginac = new JLabel("登陆账号");
+    JLabel loginpw = new JLabel("登陆密码");
+    JLabel paypw = new JLabel("交易密码");
+    JLabel maxinvest  = new JLabel("最大额度");
+    JTextField loginacText = new JTextField();
+    JTextField loginpwText = new JTextField();
+    JTextField paypwText = new JTextField();
+    JTextField maxinvestText = new JTextField();
+    JButton investfigBt = new JButton("保存");
+
 
     JFrame chartFrame = null;
     final JTabbedPane jtp = new JTabbedPane();
@@ -97,10 +115,16 @@ public class MyFrame implements ActionListener {
         rateText0.setText((kaisaBid.getRate()[0]/100.0)+"");
         rateText1.setText((kaisaBid.getRate()[1]/100.0)+"");
         scanurlText.setText(kaisaBid.getScanUrl());
+        loginUrlText.setText(kaisaBid.getLoginUrl());
+        hostText.setText(kaisaBid.getHost());
         loanDetailText.setText(kaisaBid.getLoanDetail());
         loanListText.setText(kaisaBid.getLoanList());
         intervalText.setText(kaisaBid.getScanInteval().toString());
         pageSizeText.setText(kaisaBid.getPageSize().toString());
+        loginacText.setText(kaisaBid.getUsername());
+        loginpwText.setText(kaisaBid.getPassword());
+        paypwText.setText(kaisaBid.getPayPassword());
+        maxinvestText.setText(kaisaBid.getMaxInvestMoney().toString());
         String priorityIndexs = kaisaBid.getPriorityIndexs();
         for(String index : priorityIndexs.split(",")){
             if(index.equals("1")){
@@ -177,6 +201,7 @@ public class MyFrame implements ActionListener {
 
         config.add(scanconfig) ;   //将菜单项目添加到菜单
         config.add(urlconfig) ;    //将菜单项目添加到菜单
+        config.add(investfig);
         help.add(about);
         help.add(sop);
         help.add(data);
@@ -217,6 +242,7 @@ public class MyFrame implements ActionListener {
         stoplistener.addActionListener(this);
         listener.addActionListener(this);
         scanconfig.addActionListener(this);
+        investfig.addActionListener(this);
         about.addActionListener(this);
         urlconfig.addActionListener(this);
         sop.addActionListener(this);
@@ -312,6 +338,10 @@ public class MyFrame implements ActionListener {
             }
             framesub.dispose();
         }else if (e.getSource().equals(urlconfigBt)) {// 判断触发方法的按钮是哪个
+            PropertiesUtil.setValue("host",hostText.getText());
+            kaisaBidController.getKaisaBid().setHost(hostText.getText());
+            PropertiesUtil.setValue("loginUrl",loginUrlText.getText());
+            kaisaBidController.getKaisaBid().setLoginUrl(loginUrlText.getText());
             PropertiesUtil.setValue("scanUrl",scanurlText.getText());
             kaisaBidController.getKaisaBid().setScanUrl(scanurlText.getText());
             PropertiesUtil.setValue("loanDetail",loanDetailText.getText());
@@ -321,6 +351,24 @@ public class MyFrame implements ActionListener {
             PropertiesUtil.setValue("autoJumpPage",jumpLoanDetail.isSelected()?jumpLoanDetail.getName():jumpLoanList.getName());
             kaisaBidController.getKaisaBid().setAutoJumpPage(jumpLoanDetail.isSelected()?jumpLoanDetail.getName():jumpLoanList.getName());
             framesuburl.dispose();
+        }else if (e.getSource().equals(investfigBt)) {// 判断触发方法的按钮是哪个
+            PropertiesUtil.setValue("username",loginacText.getText());
+            kaisaBidController.getKaisaBid().setUsername(loginacText.getText());
+            PropertiesUtil.setValue("password",loginpwText.getText());
+            kaisaBidController.getKaisaBid().setPassword(loginpwText.getText());
+            PropertiesUtil.setValue("payPassword",paypwText.getText());
+            kaisaBidController.getKaisaBid().setPayPassword(paypwText.getText());
+
+            try {
+                PropertiesUtil.setValue("maxInvestMoney",maxinvestText.getText());
+                kaisaBidController.getKaisaBid().setMaxInvestMoney(Integer.parseInt(maxinvestText.getText()));
+            } catch (NumberFormatException e1) {
+                JOptionPane.showMessageDialog(null, "最大可投金额必须是数字", "警告", 2);
+                PropertiesUtil.setValue("maxInvestMoney","10000");
+                kaisaBidController.getKaisaBid().setMaxInvestMoney(10000);
+                maxinvestText.setText("10000");
+            }
+            frameinvest.dispose();
         }else if(e.getSource().equals(urlconfig)){
             if(framesuburl==null){
                 buttonGroup.add(jumpLoanDetail);
@@ -334,7 +382,7 @@ public class MyFrame implements ActionListener {
                 double lx = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
                 double ly = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
                 framesuburl.setLocation(new Point((int) (lx / 2) - 150, (int) (ly / 2) - 150));// 设定窗口出现位置
-                framesuburl.setSize(400, 200);// 设定窗口大小
+                framesuburl.setSize(400, 260);// 设定窗口大小
                 framesuburl.setBounds(// 让新窗口与Swing7窗口示例错开50像素。
                         new Rectangle(
                                 (int) framesuburl.getBounds().getX() + 50,
@@ -344,21 +392,31 @@ public class MyFrame implements ActionListener {
                         )
                 );
 
-                scanurl.setBounds(10,10,95,20);
-                scanurlText.setBounds(80,10,300,20);
-                loanDetail.setBounds(10,40,95,20);
-                loanDetailText.setBounds(80,40,300,20);
-                urlconfigBt.setBounds(150,130,100,20);
-                loanList.setBounds(10,70,95,20);
-                loanListText.setBounds(80,70,300,20);
-                autoJump.setBounds(10,100,95,20);
-                jumpLoanDetail.setBounds(80,100,100,20);
-                jumpLoanList.setBounds(180,100,100,20);
+
+                host.setBounds(10,10,95,20);
+                hostText.setBounds(80,10,300,20);
+                scanurl.setBounds(10,40,95,20);
+                scanurlText.setBounds(80,40,300,20);
+                loanDetail.setBounds(10,70,95,20);
+                loanDetailText.setBounds(80,70,300,20);
+                loanList.setBounds(10,100,95,20);
+                loanListText.setBounds(80,100,300,20);
+                loginUrl.setBounds(10,130,95,20);
+                loginUrlText.setBounds(80,130,300,20);
+
+                autoJump.setBounds(10,160,95,20);
+                jumpLoanDetail.setBounds(80,160,100,20);
+                jumpLoanList.setBounds(180,160,100,20);
+                urlconfigBt.setBounds(150,190,100,20);
                 /*scanurlText.setText("https://www.kaisafax.com/loan/getLoanList?&ajax=1");
                 loanDetailText.setText("https://www.kaisafax.com/loan/loanDetail?loanId=");
                 loanListText.setText("https://www.kaisafax.com/loan");*/
                 consub.add(scanurl);
                 consub.add(scanurlText);
+                consub.add(host);
+                consub.add(hostText);
+                consub.add(loginUrl);
+                consub.add(loginUrlText);
                 consub.add(loanDetail);
                 consub.add(loanDetailText);
                 consub.add(urlconfigBt);
@@ -373,6 +431,56 @@ public class MyFrame implements ActionListener {
                 framesuburl.add( consub);// 添加布局1
             }else{
                 framesuburl.setVisible(true);
+            }
+        }else if(e.getSource().equals(investfig)){
+            if(frameinvest==null){
+                buttonGroup.add(jumpLoanDetail);
+                buttonGroup.add(jumpLoanList);
+                jumpLoanList.setName("loanList");
+                jumpLoanDetail.setName("loanDetail");
+                //jumpLoanDetail.setSelected(true);
+
+                frameinvest =  new JFrame("投资配置");//构造一个新的JFrame，作为新窗口。
+                Container consub = new Container();
+                double lx = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+                double ly = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+                frameinvest.setLocation(new Point((int) (lx / 2) - 150, (int) (ly / 2) - 150));// 设定窗口出现位置
+                frameinvest.setSize(400, 200);// 设定窗口大小
+                frameinvest.setBounds(// 让新窗口与Swing7窗口示例错开50像素。
+                        new Rectangle(
+                                (int) frameinvest.getBounds().getX() + 50,
+                                (int) frameinvest.getBounds().getY() + 50,
+                                (int) frameinvest.getBounds().getWidth(),
+                                (int) frameinvest.getBounds().getHeight()
+                        )
+                );
+
+
+                loginac.setBounds(10,10,95,20);
+                loginacText.setBounds(80,10,300,20);
+                loginpw.setBounds(10,40,95,20);
+                loginpwText.setBounds(80,40,300,20);
+                paypw.setBounds(10,70,95,20);
+                paypwText.setBounds(80,70,300,20);
+                maxinvest.setBounds(10,100,95,20);
+                maxinvestText.setBounds(80,100,300,20);
+
+                investfigBt.setBounds(150,130,100,20);
+                consub.add(loginac);
+                consub.add(loginacText);
+                consub.add(loginpw);
+                consub.add(loginpwText);
+                consub.add(paypw);
+                consub.add(paypwText);
+                consub.add(maxinvest);
+                consub.add(maxinvestText);
+                consub.add(investfigBt);
+
+                investfigBt.addActionListener(this);
+                frameinvest.setVisible(true);
+                frameinvest.add( consub);// 添加布局1
+            }else{
+                frameinvest.setVisible(true);
             }
         }else if (e.getSource().equals(scanconfig)) {// 判断触发方法的按钮是哪个
            if(framesub==null){

@@ -18,10 +18,17 @@ public class KaisaBid {
     private String status="7";
     private Integer scanInteval=30;
     private Integer pageSize=5;
+    private String host="https://www.kaisafax.com/";
     private String scanUrl="https://www.kaisafax.com/loan/getLoanList?&ajax=1";
     private String loanDetail="https://www.kaisafax.com/loan/loanDetail?loanId=";
     private String loanList="https://www.kaisafax.com/loan";
     private String autoJumpPage="loanDetail";
     private Boolean openBrower =true;
     private String  priorityIndexs = "1";
+    private Integer maxInvestMoney = 10000;
+    private String loginUrl = "login/logout/";
+    private String loanId = "0";
+    private String username = "18607371493 ";
+    private String password="******";
+    private String payPassword="******";
 }

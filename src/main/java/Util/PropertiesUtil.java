@@ -47,7 +47,13 @@ public class PropertiesUtil {
         }
     }
     public static String getValue(String key){
-        return  prop.getProperty( key ).trim();
+        try {
+            return  prop.getProperty( key ).trim();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(key);
+        }
+        return "";
     }
     public static void setValue(String key,String value){
         try {
