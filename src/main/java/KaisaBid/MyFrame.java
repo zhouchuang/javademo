@@ -83,7 +83,7 @@ public class MyFrame implements ActionListener {
     JLabel loanDetail = new JLabel("  项目详情");
     JLabel loginUrl = new JLabel("  登陆页面");
     JLabel autoJump = new JLabel("  自动跳转");
-    JLabel autoInvest =new JLabel("投资方式");
+    JLabel autoInvest =new JLabel("  投资方式");
     JRadioButton jumpLoanDetail = new JRadioButton("项目详情");
     JRadioButton jumpLoanList = new JRadioButton("我要投资");
     ButtonGroup buttonGroup = new ButtonGroup();
