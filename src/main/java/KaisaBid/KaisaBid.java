@@ -31,4 +31,5 @@ public class KaisaBid {
     private String username = "18607371493 ";
     private String password="******";
     private String payPassword="******";
+    private String autoInvest = "fullAutoInvest";  //fullAutoInvest   halfAutoInvest
 }

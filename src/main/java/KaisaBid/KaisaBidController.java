@@ -12,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,6 +47,8 @@ public class KaisaBidController extends Thread {
             scanAble = true;
             scan();
         }else{
+            java.awt.Desktop dp = java.awt.Desktop.getDesktop() ;
+            dp.open(new File("C:\\Users\\zhouchuang\\Desktop\\金服投标助手\\ChromeTool.exe"));
             start();
             isStart = true;
         }
@@ -69,7 +72,6 @@ public class KaisaBidController extends Thread {
                 e.printStackTrace();
             }
         }
-
     }
 
 
@@ -197,19 +199,35 @@ public class KaisaBidController extends Thread {
         return body;
     }*/
 
-    public  void openBrower(String id){
+    private void sendMsgBySocket(String str_send)throws Exception{
+        try {
+            DatagramSocket ds = new DatagramSocket();
+            InetAddress server = InetAddress.getByName("127.0.0.1");
+            DatagramPacket dp_send= new DatagramPacket(str_send.getBytes(),str_send.length(),server,11567);
+            ds.send(dp_send);
+            ds.close();
+        } catch (Exception e) {
+            System.out.println("服务器异常: " + e.getMessage());
+        }
+    }
+
+    private  void openBrower(String id){
         PropertiesUtil.setValue("loanId",id);
         if (java.awt.Desktop.isDesktopSupported()) {
             try {
                 // 创建一个URI实例
                 java.net.URI uri =null;
-                java.awt.Desktop dp = java.awt.Desktop.getDesktop() ;
                 if(this.kaisaBid.getAutoJumpPage().equals("loanDetail")){
                     uri = java.net.URI.create(kaisaBid.getHost()+this.kaisaBid.getLoanDetail()+id);
-                    dp.open(new File("C:\\Users\\zhouchuang\\Desktop\\金服投标助手\\ChromeTool.exe"));
+                    java.awt.Desktop dp = java.awt.Desktop.getDesktop() ;
+                    if(kaisaBid.getAutoInvest().equals("fullAutoInvest")){
+                        //dp.open(new File("C:\\Users\\zhouchuang\\Desktop\\金服投标助手\\ChromeTool.exe"));
+                        sendMsgBySocket(id);
+                    }else{
+                        dp.browse(uri);
+                    }
                 }else{
                     uri = java.net.URI.create(kaisaBid.getHost()+this.kaisaBid.getLoanList());
-                    dp.browse( uri ) ;
                 }
                 // 获取当前系统桌面扩展
 

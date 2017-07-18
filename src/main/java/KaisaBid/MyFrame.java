@@ -83,9 +83,13 @@ public class MyFrame implements ActionListener {
     JLabel loanDetail = new JLabel("  项目详情");
     JLabel loginUrl = new JLabel("  登陆页面");
     JLabel autoJump = new JLabel("  自动跳转");
+    JLabel autoInvest =new JLabel("投资方式");
     JRadioButton jumpLoanDetail = new JRadioButton("项目详情");
     JRadioButton jumpLoanList = new JRadioButton("我要投资");
     ButtonGroup buttonGroup = new ButtonGroup();
+    JRadioButton fullAutoInvest = new JRadioButton("全自动投资");
+    JRadioButton halfAutoInvest = new JRadioButton("半自动投资");
+    ButtonGroup autoInvestbuttonGroup = new ButtonGroup();
     JTextField scanurlText = new JTextField();
     JTextField loginUrlText = new JTextField();
     JTextField hostText = new JTextField();
@@ -147,6 +151,14 @@ public class MyFrame implements ActionListener {
         }else{
             jumpLoanList.setSelected(true);
         }
+
+        String autoInvestMethod = kaisaBid.getAutoInvest();
+        if(autoInvestMethod.equals("fullAutoInvest")){
+            fullAutoInvest.setSelected(true);
+        }else{
+            halfAutoInvest.setSelected(true);
+        }
+
         statusComboBox.addItem("筹款中");//7
         statusComboBox.addItem("已流标");//8
         statusComboBox.addItem("已满标");//9
@@ -350,6 +362,8 @@ public class MyFrame implements ActionListener {
             kaisaBidController.getKaisaBid().setLoanList(loanListText.getText());
             PropertiesUtil.setValue("autoJumpPage",jumpLoanDetail.isSelected()?jumpLoanDetail.getName():jumpLoanList.getName());
             kaisaBidController.getKaisaBid().setAutoJumpPage(jumpLoanDetail.isSelected()?jumpLoanDetail.getName():jumpLoanList.getName());
+            PropertiesUtil.setValue("autoInvest",fullAutoInvest.isSelected()?fullAutoInvest.getName():halfAutoInvest.getName());
+            kaisaBidController.getKaisaBid().setAutoInvest(fullAutoInvest.isSelected()?fullAutoInvest.getName():halfAutoInvest.getName());
             framesuburl.dispose();
         }else if (e.getSource().equals(investfigBt)) {// 判断触发方法的按钮是哪个
             PropertiesUtil.setValue("username",loginacText.getText());
@@ -373,8 +387,12 @@ public class MyFrame implements ActionListener {
             if(framesuburl==null){
                 buttonGroup.add(jumpLoanDetail);
                 buttonGroup.add(jumpLoanList);
+                autoInvestbuttonGroup.add(fullAutoInvest);
+                autoInvestbuttonGroup.add(halfAutoInvest);
                 jumpLoanList.setName("loanList");
                 jumpLoanDetail.setName("loanDetail");
+                fullAutoInvest.setName("fullAutoInvest");
+                halfAutoInvest.setName("halfAutoInvest");
                 //jumpLoanDetail.setSelected(true);
 
                 framesuburl =  new JFrame("网络配置");//构造一个新的JFrame，作为新窗口。
@@ -382,7 +400,7 @@ public class MyFrame implements ActionListener {
                 double lx = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
                 double ly = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
                 framesuburl.setLocation(new Point((int) (lx / 2) - 150, (int) (ly / 2) - 150));// 设定窗口出现位置
-                framesuburl.setSize(400, 260);// 设定窗口大小
+                framesuburl.setSize(400, 300);// 设定窗口大小
                 framesuburl.setBounds(// 让新窗口与Swing7窗口示例错开50像素。
                         new Rectangle(
                                 (int) framesuburl.getBounds().getX() + 50,
@@ -407,7 +425,13 @@ public class MyFrame implements ActionListener {
                 autoJump.setBounds(10,160,95,20);
                 jumpLoanDetail.setBounds(80,160,100,20);
                 jumpLoanList.setBounds(180,160,100,20);
-                urlconfigBt.setBounds(150,190,100,20);
+
+                autoInvest.setBounds(10,190,95,20);
+                fullAutoInvest.setBounds(80,190,100,20);
+                halfAutoInvest.setBounds(180,190,100,20);
+
+
+                urlconfigBt.setBounds(150,220,100,20);
                 /*scanurlText.setText("https://www.kaisafax.com/loan/getLoanList?&ajax=1");
                 loanDetailText.setText("https://www.kaisafax.com/loan/loanDetail?loanId=");
                 loanListText.setText("https://www.kaisafax.com/loan");*/
@@ -425,6 +449,9 @@ public class MyFrame implements ActionListener {
                 consub.add(autoJump);
                 consub.add(jumpLoanDetail);
                 consub.add(jumpLoanList);
+                consub.add(autoInvest);
+                consub.add(fullAutoInvest);
+                consub.add(halfAutoInvest);
 
                 urlconfigBt.addActionListener(this);
                 framesuburl.setVisible(true);
@@ -434,12 +461,6 @@ public class MyFrame implements ActionListener {
             }
         }else if(e.getSource().equals(investfig)){
             if(frameinvest==null){
-                buttonGroup.add(jumpLoanDetail);
-                buttonGroup.add(jumpLoanList);
-                jumpLoanList.setName("loanList");
-                jumpLoanDetail.setName("loanDetail");
-                //jumpLoanDetail.setSelected(true);
-
                 frameinvest =  new JFrame("投资配置");//构造一个新的JFrame，作为新窗口。
                 Container consub = new Container();
                 double lx = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
