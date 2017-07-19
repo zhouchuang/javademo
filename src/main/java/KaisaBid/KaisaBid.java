@@ -26,6 +26,7 @@ public class KaisaBid {
     private Boolean openBrower =true;
     private String  priorityIndexs = "1";
     private Integer maxInvestMoney = 10000;
+    private Integer investMoney = 10000;
     private String loginUrl = "login/logout/";
     private String loanId = "0";
     private String username = "18607371493 ";

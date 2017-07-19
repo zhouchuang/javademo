@@ -44,6 +44,7 @@ public class KaisaBidController extends Thread {
     //private String  priorityIndexs = "1";
     public void startScan()throws Exception{
         if(isStart){
+            sendMsgBySocket("start");
             scanAble = true;
             scan();
         }else{

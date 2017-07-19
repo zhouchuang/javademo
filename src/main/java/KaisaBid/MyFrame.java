@@ -102,10 +102,12 @@ public class MyFrame implements ActionListener {
     JLabel loginpw = new JLabel("登陆密码");
     JLabel paypw = new JLabel("交易密码");
     JLabel maxinvest  = new JLabel("最大额度");
+    JLabel investMoney = new JLabel("投资额度");
     JTextField loginacText = new JTextField();
     JTextField loginpwText = new JTextField();
     JTextField paypwText = new JTextField();
     JTextField maxinvestText = new JTextField();
+    JTextField investMoneyText = new JTextField();
     JButton investfigBt = new JButton("保存");
 
 
@@ -129,6 +131,7 @@ public class MyFrame implements ActionListener {
         loginpwText.setText(kaisaBid.getPassword());
         paypwText.setText(kaisaBid.getPayPassword());
         maxinvestText.setText(kaisaBid.getMaxInvestMoney().toString());
+        investMoneyText.setText(kaisaBid.getInvestMoney().toString());
         String priorityIndexs = kaisaBid.getPriorityIndexs();
         for(String index : priorityIndexs.split(",")){
             if(index.equals("1")){
@@ -382,6 +385,16 @@ public class MyFrame implements ActionListener {
                 kaisaBidController.getKaisaBid().setMaxInvestMoney(10000);
                 maxinvestText.setText("10000");
             }
+            try {
+                PropertiesUtil.setValue("investMoney",investMoneyText.getText());
+                kaisaBidController.getKaisaBid().setInvestMoney(Integer.parseInt(investMoneyText.getText()));
+            } catch (NumberFormatException e1) {
+                JOptionPane.showMessageDialog(null, "投资额度必须是数字", "警告", 2);
+                PropertiesUtil.setValue("investMoney","0");
+                kaisaBidController.getKaisaBid().setInvestMoney(0);
+                investMoneyText.setText("0");
+            }
+
             frameinvest.dispose();
         }else if(e.getSource().equals(urlconfig)){
             if(framesuburl==null){
@@ -466,7 +479,7 @@ public class MyFrame implements ActionListener {
                 double lx = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
                 double ly = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
                 frameinvest.setLocation(new Point((int) (lx / 2) - 150, (int) (ly / 2) - 150));// 设定窗口出现位置
-                frameinvest.setSize(400, 200);// 设定窗口大小
+                frameinvest.setSize(400, 250);// 设定窗口大小
                 frameinvest.setBounds(// 让新窗口与Swing7窗口示例错开50像素。
                         new Rectangle(
                                 (int) frameinvest.getBounds().getX() + 50,
@@ -485,8 +498,10 @@ public class MyFrame implements ActionListener {
                 paypwText.setBounds(80,70,300,20);
                 maxinvest.setBounds(10,100,95,20);
                 maxinvestText.setBounds(80,100,300,20);
+                investMoney.setBounds(10,130,95,20);
+                investMoneyText.setBounds(80,130,300,20);
 
-                investfigBt.setBounds(150,130,100,20);
+                investfigBt.setBounds(150,160,100,20);
                 consub.add(loginac);
                 consub.add(loginacText);
                 consub.add(loginpw);
@@ -495,6 +510,8 @@ public class MyFrame implements ActionListener {
                 consub.add(paypwText);
                 consub.add(maxinvest);
                 consub.add(maxinvestText);
+                consub.add(investMoney);
+                consub.add(investMoneyText);
                 consub.add(investfigBt);
 
                 investfigBt.addActionListener(this);
