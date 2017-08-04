@@ -33,4 +33,6 @@ public class KaisaBid {
     private String password="******";
     private String payPassword="******";
     private String autoInvest = "fullAutoInvest";  //fullAutoInvest   halfAutoInvest
+    private String enginePath = "";
+    private String driverPath="";
 }

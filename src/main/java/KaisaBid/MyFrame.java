@@ -43,6 +43,7 @@ public class MyFrame implements ActionListener {
     JMenuItem scanconfig=new JMenuItem("扫描配置") ;  //菜单项
     JMenuItem urlconfig=new JMenuItem("网络配置") ;//菜单项
     JMenuItem investfig=new JMenuItem("投资配置") ;//菜单项
+    JMenuItem driverfig=new JMenuItem("驱动配置") ;//菜单项
     JMenu help=new JMenu("帮助") ;     //创建JMenu菜单对象
     JMenuItem about=new JMenuItem("关于") ;  //菜单项
     JMenuItem sop=new JMenuItem("使用说明") ;  //菜单项
@@ -110,9 +111,20 @@ public class MyFrame implements ActionListener {
     JTextField investMoneyText = new JTextField();
     JButton investfigBt = new JButton("保存");
 
+    JFrame framedriver = null;
+    JLabel driver=  new JLabel("驱动位置");
+    JTextField driverText = new JTextField();
+    JLabel engine = new JLabel("引擎位置");
+    JTextField engineText = new JTextField();
+    JButton driverfigBt = new JButton("保存");
+    JButton driverBt = new JButton("浏览");
+    JButton engineBt = new JButton("浏览");
 
     JFrame chartFrame = null;
     final JTabbedPane jtp = new JTabbedPane();
+
+
+    JFileChooser jfc = new JFileChooser();// 文件选择器
     public void initConfig(){
         KaisaBid kaisaBid = (KaisaBid) PropertiesUtil.copyProertiesToObject(new KaisaBid());
         moneyText.setText(kaisaBid.getMoney().toString());
@@ -132,6 +144,8 @@ public class MyFrame implements ActionListener {
         paypwText.setText(kaisaBid.getPayPassword());
         maxinvestText.setText(kaisaBid.getMaxInvestMoney().toString());
         investMoneyText.setText(kaisaBid.getInvestMoney().toString());
+        driverText.setText(kaisaBid.getDriverPath());
+        engineText.setText(kaisaBid.getEnginePath());
         String priorityIndexs = kaisaBid.getPriorityIndexs();
         for(String index : priorityIndexs.split(",")){
             if(index.equals("1")){
@@ -171,6 +185,10 @@ public class MyFrame implements ActionListener {
         statusComboBox.setSelectedIndex(Integer.parseInt(kaisaBid.getStatus())-7);
         kaisaBidController.setKaisaBid(kaisaBid);
         kaisaBidHistoryController.setKaisaBid(kaisaBid);
+
+        String desktoppath = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath();
+        jfc.setCurrentDirectory(new File(desktoppath));
+        jfc.setFileFilter(new ExeFilter());
     }
 
     public MyFrame() {
@@ -217,6 +235,7 @@ public class MyFrame implements ActionListener {
         config.add(scanconfig) ;   //将菜单项目添加到菜单
         config.add(urlconfig) ;    //将菜单项目添加到菜单
         config.add(investfig);
+        config.add(driverfig);
         help.add(about);
         help.add(sop);
         help.add(data);
@@ -258,6 +277,7 @@ public class MyFrame implements ActionListener {
         listener.addActionListener(this);
         scanconfig.addActionListener(this);
         investfig.addActionListener(this);
+        driverfig.addActionListener(this);
         about.addActionListener(this);
         urlconfig.addActionListener(this);
         sop.addActionListener(this);
@@ -396,6 +416,30 @@ public class MyFrame implements ActionListener {
             }
 
             frameinvest.dispose();
+        }else if (e.getSource().equals(driverfigBt)) {// 判断触发方法的按钮是哪个
+            PropertiesUtil.setValue("driverPath",driverText.getText());
+            kaisaBidController.getKaisaBid().setDriverPath(driverText.getText());
+            PropertiesUtil.setValue("enginePath",engineText.getText());
+            kaisaBidController.getKaisaBid().setEnginePath(engineText.getText());
+            framedriver.dispose();
+        }else if(e.getSource().equals(driverBt)){
+            jfc.setFileSelectionMode(0);// 设定只能选择到文件
+            int state = jfc.showOpenDialog(null);// 此句是打开文件选择器界面的触发语句
+            if (state == 1) {
+                return;// 撤销则返回
+            } else {
+                File f = jfc.getSelectedFile();// f为选择到的文件
+                driverText.setText(f.getAbsolutePath());
+            }
+        }else if(e.getSource().equals(engineBt)){
+            jfc.setFileSelectionMode(0);// 设定只能选择到文件
+            int state = jfc.showOpenDialog(null);// 此句是打开文件选择器界面的触发语句
+            if (state == 1) {
+                return;// 撤销则返回
+            } else {
+                File f = jfc.getSelectedFile();// f为选择到的文件
+                engineText.setText(f.getAbsolutePath());
+            }
         }else if(e.getSource().equals(urlconfig)){
             if(framesuburl==null){
                 buttonGroup.add(jumpLoanDetail);
@@ -519,6 +563,48 @@ public class MyFrame implements ActionListener {
                 frameinvest.add( consub);// 添加布局1
             }else{
                 frameinvest.setVisible(true);
+            }
+        }else if(e.getSource().equals(driverfig)){
+            if(framedriver==null){
+                framedriver =  new JFrame("驱动配置");//构造一个新的JFrame，作为新窗口。
+                Container consub = new Container();
+                double lx = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+                double ly = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+                framedriver.setLocation(new Point((int) (lx / 2) - 150, (int) (ly / 2) - 150));// 设定窗口出现位置
+                framedriver.setSize(400, 150);// 设定窗口大小
+                framedriver.setBounds(// 让新窗口与Swing7窗口示例错开50像素。
+                        new Rectangle(
+                                (int) framedriver.getBounds().getX() + 50,
+                                (int) framedriver.getBounds().getY() + 50,
+                                (int) framedriver.getBounds().getWidth(),
+                                (int) framedriver.getBounds().getHeight()
+                        )
+                );
+
+
+                driver.setBounds(10,10,95,20);
+                driverText.setBounds(80,10,220,20);
+                driverBt.setBounds(300,10,80,20);
+                engine.setBounds(10,40,95,20);
+                engineText.setBounds(80,40,220,20);
+                engineBt.setBounds(300,40,80,20);
+                driverfigBt.setBounds(150,70,100,20);
+                engineText.setEditable(false);
+                driverText.setEditable(false);
+                driverBt.addActionListener(this);
+                engineBt.addActionListener(this);
+                consub.add(driver);
+                consub.add(driverText);
+                consub.add(engine);
+                consub.add(engineText);
+                consub.add(driverBt);
+                consub.add(engineBt);
+                consub.add(driverfigBt);
+                driverfigBt.addActionListener(this);
+                framedriver.setVisible(true);
+                framedriver.add( consub);// 添加布局1
+            }else{
+                framedriver.setVisible(true);
             }
         }else if (e.getSource().equals(scanconfig)) {// 判断触发方法的按钮是哪个
            if(framesub==null){

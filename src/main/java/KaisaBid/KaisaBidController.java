@@ -39,6 +39,7 @@ public class KaisaBidController extends Thread {
     private boolean isStart=false;
     Vector<String> title = null;
     Vector<Vector<Object>> objs = null;
+    DatagramSocket ds = null;
 
     private static String reg = ".*id\":\"(\\d+)\".*amount\":(\\d+).*days\":(\\d+).*months\":(\\d+).*investAmount\":(\\d+).*freezeAmount\":(\\d+).*rate\":(\\d+).*status\":(\\d+).*title\":\"([^\"]+)\".*";
     //private String  priorityIndexs = "1";
@@ -49,9 +50,27 @@ public class KaisaBidController extends Thread {
             scan();
         }else{
             java.awt.Desktop dp = java.awt.Desktop.getDesktop() ;
-            dp.open(new File("C:\\Users\\zhouchuang\\Desktop\\金服投标助手\\ChromeTool.exe"));
+            //dp.open(new File("C:\\Users\\zhouchuang\\Desktop\\金服投标助手\\ChromeTool.exe"));
+            dp.open(new File(kaisaBid.getEnginePath()));
             start();
             isStart = true;
+        }
+        if(ds==null){
+            ds = new DatagramSocket(11568);
+            new Thread(new KaisaListener(ds,listener)).start();
+        }
+    }
+    private void startDatagramSocket()throws Exception{
+
+        byte[] recvBuf = new byte[1024];
+        while (true){
+            DatagramPacket recvPacket = new DatagramPacket(recvBuf , recvBuf.length);
+            ds.receive(recvPacket);
+            String recvStr = new String(recvPacket.getData() , 0 ,recvPacket.getLength());
+            System.out.println(recvStr);
+            if(recvStr.equals("restart")){
+                listener.doClick();
+            }
         }
     }
     private void scan(){

@@ -15,7 +15,8 @@ public class Mysql {
     public static String  COLUMNS = "select COLUMN_NAME,COLUMN_COMMENT from INFORMATION_SCHEMA.Columns where table_name='${table}' and table_schema='${database}'";
     public static String  INSERT = "insert into kaisa(name,node,tablename,databasename)values('${name}','${node}','${tablename}','${database}')";
     public static void main(String[] args) {
-        String[] databases = new String[]{"kaisa_fax_sys_migrate", "kaisa_fax_user_migrate","kaisa_fax_trade_migrate","kaisa_fax_act_migrate","kaisa_fax_api_migrate","kaisa_fax_log_migrate","kaisa_fax_intervalmq","kaisa_fax_sms"};
+        //String[] databases = new String[]{"kaisa_fax_sys_migrate", "kaisa_fax_user_migrate","kaisa_fax_trade_migrate","kaisa_fax_act_migrate","kaisa_fax_api_migrate","kaisa_fax_log_migrate","kaisa_fax_intervalmq","kaisa_fax_sms"};
+        String[] databases = new String[]{"kams_dev"};
         for (String dataBase : databases) {
             List<String> tables = getDataBase(dataBase);
             for (String table : tables) {
@@ -37,6 +38,8 @@ public class Mysql {
         String user = "kams_dev";
         //MySQL配置时的密码
         String password = "Pes123456";
+
+
         //遍历查询结果集
         try {
             //加载驱动程序
@@ -68,24 +71,34 @@ public class Mysql {
             System.out.println(name+"\t"+node);
         }
     }
+
+    public static String driver = "com.mysql.jdbc.Driver";
+    //        //URL指向要访问的数据库名mydata
+//        String url = "jdbc:mysql://192.168.188.50:3306/kaisa_fax_sys_migrate?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true";
+//        //MySQL配置时的用户名
+//        String user = "sxfax";
+//        //MySQL配置时的密码
+//        String password = "sxfax123456";
+
+    //资产端
+    public static String targeturl = "jdbc:mysql://192.168.42.34:3306/kams_dev?characterEncoding=utf8&useSSL=true";
+    //MySQL配置时的用户名
+    public static String targetuser = "kams_w";
+    //MySQL配置时的密码
+    public static String targetpassword = "12345WEty";
+
+
     public static List<String> getDataBase(String database){
         List<String> list = new ArrayList<String>();
         //声明Connection对象
         Connection con;
-        //驱动程序名
-        String driver = "com.mysql.jdbc.Driver";
-        //URL指向要访问的数据库名mydata
-        String url = "jdbc:mysql://192.168.188.50:3306/kaisa_fax_sys_migrate?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true";
-        //MySQL配置时的用户名
-        String user = "sxfax";
-        //MySQL配置时的密码
-        String password = "sxfax123456";
+
         //遍历查询结果集
         try {
             //加载驱动程序
             Class.forName(driver);
             //1.getConnection()方法，连接MySQL数据库！！
-            con = DriverManager.getConnection(url,user,password);
+            con = DriverManager.getConnection(targeturl,targetuser,targetpassword);
             if(!con.isClosed())
                 System.out.println("Succeeded connecting to the Database!");
             //2.创建statement类对象，用来执行SQL语句！！
@@ -121,20 +134,13 @@ public class Mysql {
         List<Map<String,String>> list  = new ArrayList<Map<String,String>>();
         //声明Connection对象
         Connection con;
-        //驱动程序名
-        String driver = "com.mysql.jdbc.Driver";
-        //URL指向要访问的数据库名mydata
-        String url = "jdbc:mysql://192.168.188.50:3306/kaisa_fax_sys_migrate?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true";
-        //MySQL配置时的用户名
-        String user = "sxfax";
-        //MySQL配置时的密码
-        String password = "sxfax123456";
+
         //遍历查询结果集
         try {
             //加载驱动程序
             Class.forName(driver);
             //1.getConnection()方法，连接MySQL数据库！！
-            con = DriverManager.getConnection(url,user,password);
+            con = DriverManager.getConnection(targeturl,targetuser,targetpassword);
             if(!con.isClosed())
                 System.out.println("Succeeded connecting to the Database!");
             //2.创建statement类对象，用来执行SQL语句！！

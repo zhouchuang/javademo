@@ -175,7 +175,7 @@ public class KaisaBidHistoryController {
                 map.put("pageNum",i+"");
                 String body = null;
                 try {
-                    body = HttpClientUtil.send(kaisaBid.getScanUrl(), map,"utf-8");
+                    body = HttpClientUtil.send(kaisaBid.getHost()+kaisaBid.getScanUrl(), map,"utf-8");
                 } catch (IOException e) {
                     System.out.println(e.getMessage());
                 }
